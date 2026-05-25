@@ -5,22 +5,22 @@
     {
       "nome": "Brancato",
       "foto": "brancato.jpeg",
-      "voti": 4136
+      "voti": 4146
     },
     {
       "nome": "Trovato",
       "foto": "trovato.jpg",
-      "voti": 2987
+      "voti": 3000
     },
     {
       "nome": "Riccobene",
       "foto": "riccobene.jpg",
-      "voti": 1613
+      "voti": 1625
     },
     {
       "nome": "Battipaglia",
       "foto": "battipaglia.jpeg",
-      "voti": 200
+      "voti": 202
     }
   ]
 }
