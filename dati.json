@@ -1,21 +1,21 @@
-{
+1{
   "sezioniScrutinate": 11,
   "sezioniTotali": 20,
   "candidati": [
     {
       "nome": "Brancato",
       "foto": "brancato.jpeg",
-      "voti": 5101
+      "voti": 5127
     },
     {
       "nome": "Trovato",
       "foto": "trovato.jpg",
-      "voti": 3710
+      "voti": 3715
     },
     {
       "nome": "Riccobene",
       "foto": "riccobene.jpg",
-      "voti": 1967
+      "voti": 1977
     },
     {
       "nome": "Battipaglia",
