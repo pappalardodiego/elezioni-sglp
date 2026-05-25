@@ -1,0 +1,31 @@
+{
+  "sezioniScrutinate": 0,
+  "sezioniTotali": 0,
+  "candidati": [
+    {
+      "nome": "Brancato",
+      "lista": "Candidato sindaco",
+      "foto": "foto/brancato.jpeg",
+      "voti": 1500
+    },
+    {
+      "nome": "Trovato",
+      "lista": "Candidato sindaco",
+      "foto": "foto/trovato.jpg",
+      "voti": 24
+    },
+    {
+      "nome": "Riccobene",
+      "lista": "Candidato sindaco",
+      "foto": "foto/riccobene.jpg",
+      "voti": 45
+    },
+    {
+      "nome": "Battipaglia",
+      "lista": "Candidato sindaco",
+      "foto": "foto/battipaglia.jpeg",
+      "voti": 42
+    
+    }
+  ]
+}
