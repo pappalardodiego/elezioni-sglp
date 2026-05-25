@@ -21,8 +21,7 @@
     .candidate-card { background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 6px 18px rgba(0,0,0,.10); }
     .candidate-photo { width: 100%; height: 260px; object-fit: cover; background: #ddd; display: block; }
     .candidate-content { padding: 18px; text-align: center; }
-    .candidate-name { font-size: 22px; font-weight: bold; margin-bottom: 6px; }
-    .candidate-list { color: #777; font-size: 14px; margin-bottom: 18px; }
+    .candidate-name { font-size: 22px; font-weight: bold; margin-bottom: 12px; }
     .votes { font-size: 28px; font-weight: bold; margin-bottom: 4px; }
     .votes-label { font-size: 13px; color: #777; margin-bottom: 14px; }
     .percentage { font-size: 34px; font-weight: bold; color: #0b5ed7; margin-bottom: 12px; }
@@ -51,7 +50,6 @@
 
     <div id="statusMessage">Caricamento dati...</div>
     <main class="grid" id="candidateGrid"></main>
-
     <footer></footer>
   </div>
 
@@ -62,30 +60,10 @@
       sezioniScrutinate: 0,
       sezioniTotali: 0,
       candidati: [
-        {
-          nome: "Brancato",
-          lista: "Candidato sindaco",
-          foto: "brancato.jpeg",
-          voti: 0
-        },
-        {
-          nome: "Trovato",
-          lista: "Candidato sindaco",
-          foto: "trovato.jpg",
-          voti: 0
-        },
-        {
-          nome: "Riccobene",
-          lista: "Candidato sindaco",
-          foto: "riccobene.jpg",
-          voti: 0
-        },
-        {
-          nome: "Battipaglia",
-          lista: "Candidato sindaco",
-          foto: "battipaglia.jpeg",
-          voti: 0
-        }
+        { nome: "Brancato", foto: "brancato.jpeg", voti: 0 },
+        { nome: "Trovato", foto: "trovato.jpg", voti: 0 },
+        { nome: "Riccobene", foto: "riccobene.jpg", voti: 0 },
+        { nome: "Battipaglia", foto: "battipaglia.jpeg", voti: 0 }
       ]
     };
 
@@ -134,7 +112,7 @@
           card.className = "candidate-card" + (isWinner ? " winner" : "");
           card.innerHTML =
             '<div class="winner-label">Primo candidato al momento</div>' +
-            '<img class="candidate-photo" src="' + candidato.foto + '" alt="Foto di ' + candidato.nome + '">' +
+            '<img class="candidate-photo" src="' + candidato.foto + '?v=' + Date.now() + '" alt="Foto di ' + candidato.nome + '">' +
             '<div class="candidate-content">' +
             '<div class="candidate-name">' + candidato.nome + '</div>' +
             '<div class="votes">' + formatNumber(candidato.voti) + '</div>' +
@@ -156,19 +134,11 @@
       try {
         setStatus("Aggiornamento dati in corso...");
 
-        const response = await fetch(DATA_URL + "?t=" + Date.now(), {
-          cache: "no-store"
-        });
-
-        if (!response.ok) {
-          throw new Error("File dati.json non trovato o non leggibile");
-        }
+        const response = await fetch(DATA_URL + "?t=" + Date.now(), { cache: "no-store" });
+        if (!response.ok) throw new Error("File dati.json non trovato o non leggibile");
 
         const data = await response.json();
-
-        if (!data.candidati || !Array.isArray(data.candidati)) {
-          throw new Error("Formato dati.json non valido");
-        }
+        if (!data.candidati || !Array.isArray(data.candidati)) throw new Error("Formato dati.json non valido");
 
         electionData = data;
         renderElectionData(electionData);
@@ -184,169 +154,7 @@
       renderElectionData(electionData);
 
       const button = document.getElementById("refreshButton");
-      if (button) {
-        button.addEventListener("click", caricaDati);
-      }
-
-      caricaDati();
-      setInterval(caricaDati, 10000);
-    });
-  </script>
-</body>
-</html>
-</head>
-<body>
-  <div class="container">
-    <header>
-      <h1>Risultati Elezioni Comunali</h1>
-      <p>Comune di San Giovanni La Punta - Scrutinio in tempo reale</p>
-    </header>
-
-    <section class="status-bar">
-      <div class="live-badge"><span class="live-dot"></span> LIVE</div>
-      <div>Sezioni scrutinate: <strong id="sezioni">0 / 0</strong></div>
-      <div>Ultimo aggiornamento: <strong id="ultimoAggiornamento">--:--:--</strong></div>
-      <button class="refresh-button" id="refreshButton" type="button">Aggiorna dati</button>
-    </section>
-
-    <div id="statusMessage">Caricamento dati...</div>
-    <main class="grid" id="candidateGrid"></main>
-
-    <footer></footer>
-  </div>
-
-  <script>
-    const DATA_URL = "dati.json";
-
-    const datiDefault = {
-      sezioniScrutinate: 0,
-      sezioniTotali: 0,
-      candidati: [
-        {
-          nome: "Brancato",
-          lista: "Candidato sindaco",
-          foto: "foto/brancato.jpeg",
-          voti: 0
-        },
-        {
-          nome: "Trovato",
-          lista: "Candidato sindaco",
-          foto: "foto/trovato.jpg",
-          voti: 0
-        },
-        {
-          nome: "Riccobene",
-          lista: "Candidato sindaco",
-          foto: "foto/riccobene.jpg",
-          voti: 0
-        },
-        {
-          nome: "Battipaglia",
-          lista: "Candidato sindaco",
-          foto: "foto/battipaglia.jpeg",
-          voti: 0
-        }
-      ]
-    };
-
-    let electionData = datiDefault;
-
-    function setStatus(message) {
-      const status = document.getElementById("statusMessage");
-      if (status) status.textContent = message;
-    }
-
-    function formatNumber(number) {
-      return Number(number || 0).toLocaleString("it-IT");
-    }
-
-    function calculateTotalVotes(candidati) {
-      return candidati.reduce((totale, candidato) => totale + Number(candidato.voti || 0), 0);
-    }
-
-    function getPercentage(voti, totale) {
-      if (totale === 0) return 0;
-      return Number(voti || 0) / totale * 100;
-    }
-
-    function renderElectionData(data) {
-      const grid = document.getElementById("candidateGrid");
-      const sezioni = document.getElementById("sezioni");
-      const ultimoAggiornamento = document.getElementById("ultimoAggiornamento");
-      if (!grid || !sezioni || !ultimoAggiornamento) return;
-
-      const totaleVoti = calculateTotalVotes(data.candidati);
-      const maxVoti = Math.max(...data.candidati.map(candidato => Number(candidato.voti || 0)));
-
-      sezioni.textContent = `${data.sezioniScrutinate || 0} / ${data.sezioniTotali || 0}`;
-      ultimoAggiornamento.textContent = new Date().toLocaleTimeString("it-IT");
-      grid.innerHTML = "";
-
-      data.candidati
-        .slice()
-        .sort((a, b) => Number(b.voti || 0) - Number(a.voti || 0))
-        .forEach(candidato => {
-          const percentuale = getPercentage(candidato.voti, totaleVoti);
-          const isWinner = Number(candidato.voti || 0) === maxVoti && maxVoti > 0;
-          const fallbackFoto = "https://via.placeholder.com/600x700?text=" + encodeURIComponent(candidato.nome);
-
-          const card = document.createElement("article");
-          card.className = "candidate-card" + (isWinner ? " winner" : "");
-          card.innerHTML =
-            '<div class="winner-label">Primo candidato al momento</div>' +
-            '<img class="candidate-photo" src="' + candidato.foto + '" alt="Foto di ' + candidato.nome + '">' +
-            '<div class="candidate-content">' +
-            '<div class="candidate-name">' + candidato.nome + '</div>' +
-            '<div class="votes">' + formatNumber(candidato.voti) + '</div>' +
-            '<div class="votes-label">voti</div>' +
-            '<div class="percentage">' + percentuale.toFixed(2).replace(".", ",") + '%</div>' +
-            '<div class="progress-bar"><div class="progress-fill" style="width: ' + percentuale + '%"></div></div>' +
-            '</div>';
-
-          const img = card.querySelector("img");
-          img.onerror = function () {
-            this.src = fallbackFoto;
-          };
-
-          grid.appendChild(card);
-        });
-    }
-
-    async function caricaDati() {
-      try {
-        setStatus("Aggiornamento dati in corso...");
-
-        const response = await fetch(DATA_URL + "?t=" + Date.now(), {
-          cache: "no-store"
-        });
-
-        if (!response.ok) {
-          throw new Error("File dati.json non trovato o non leggibile");
-        }
-
-        const data = await response.json();
-
-        if (!data.candidati || !Array.isArray(data.candidati)) {
-          throw new Error("Formato dati.json non valido");
-        }
-
-        electionData = data;
-        renderElectionData(electionData);
-        setStatus("Dati aggiornati alle " + new Date().toLocaleTimeString("it-IT"));
-      } catch (error) {
-        console.error(error);
-        renderElectionData(electionData);
-        setStatus("Errore: " + error.message + ". Sto mostrando gli ultimi dati disponibili.");
-      }
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-      renderElectionData(electionData);
-
-      const button = document.getElementById("refreshButton");
-      if (button) {
-        button.addEventListener("click", caricaDati);
-      }
+      if (button) button.addEventListener("click", caricaDati);
 
       caricaDati();
       setInterval(caricaDati, 10000);
